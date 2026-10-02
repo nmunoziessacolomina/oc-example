@@ -15,5 +15,14 @@ def create_app(config_class=Config):
 
     with app.app_context():
         db.create_all()  # Create tables
+        from .models import Post
+        # Seed initial data if table is empty
+        if not Post.query.first():
+            mock_posts = [
+                Post(title='First Post', content='Content of the first post', author='Author 1'),
+                Post(title='Second Post', content='Content of the second post', author='Author 2')
+            ]
+            db.session.bulk_save_objects(mock_posts)
+            db.session.commit()
 
     return app
